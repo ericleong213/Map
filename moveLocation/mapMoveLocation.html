@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>百度地圖</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="mapMoveLocation.css">
+</head>
+<body>
+<h1 id="title">常用的地點及其路線</h1>
+<div class="selectionBoxContainer">
+    <form id="myForm">
+        <label>選擇你的地點</label>
+        <select class="selectionBox">
+            <option class="selection">永援</option>
+            <option class="selection">八佰伴</option>
+            <option class="selection">游泳池</option>
+        </select>
+    </form>
+    <h3 id="message">placeholder</h3>
+    <button onclick="myfunction()">位置轉移</button>
+</div>
+<div id="container">
+</div> 
+
+<!-- API for make a new map -->
+<!-- <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=6v7GB0oiFeD2nqmSG3j8LBmcRIXHXo0Q"></script> -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6v7GB0oiFeD2nqmSG3j8LBmcRIXHXo0Q"></script>
+
+
+
+
+<!-- API for transfer normal coordinate to baidu coordinate -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+<script src="http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924&from=1&to=5&ak=6v7GB0oiFeD2nqmSG3j8LBmcRIXHXo0Q"></script>
+
+<script type="text/javascript">
+
+var map = new BMap.Map("container"); // 创建Map实例
+var point = new BMap.Point(113.557516, 22.205986); 
+map.centerAndZoom(point, 15);  
+map.enableScrollWheelZoom(false); // 开启鼠标滚轮缩放
+
+function myfunction() {
+    let places = {
+      永援: { x: 113.560949, y: 22.201223 },
+      八佰伴: { x: 113.55195, y: 22.194182 },
+      游泳池: { x: 113.564338, y: 22.205551 },
+      螺絲山公園: { x: 113.564183, y: 22.207227 },
+    };
+  
+    const locationName = document.getElementById("myForm").elements[0].value;
+  
+    console.log("你選中的是" + locationName);
+  
+    let message = document.getElementById("message");
+    message.innerHTML = "即將移動到" + locationName;
+  
+    window.setTimeout(
+      function () {
+        map.panTo(
+          new BMap.Point(places[locationName]["x"], places[locationName]["y"])
+        );
+        message.innerHTML = "已到" + locationName;
+        console.log("timeout after 2 seconds");
+      },
+      2000
+      //     function () {
+      //   map.panTo(new BMap.Point(places[locationName]);
+      //   message.innerHTML = "已到" + locationName;
+      // },
+    );
+  }
+</script>
+
+</body>
+</html>

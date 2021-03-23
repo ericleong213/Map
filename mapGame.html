@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>百度地圖估地點</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />  
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="mapGame.css"> 
+        <script src="https://kit.fontawesome.com/d3a6009e53.js" crossorigin="anonymous"></script>
+    	<script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=6v7GB0oiFeD2nqmSG3j8LBmcRIXHXo0Q"></script>
+        <style type="text/css">
+            body, html{width: 100%;height: 100%;font-family:"微软雅黑";}
+            #panorama {width:100%; height: 500px;}
+            #result {width:100%;font-size:12px;}
+        </style>
+    </head>
+    <body class="container">
+        <header>
+            <!-- <a href="#" class="app-header__logo">澳門地圖估地點</a> -->
+            <h1 >
+                澳門地圖估地點
+                <i class="fas fa-globe-asia"></i>
+            </h1>
+        </header>
+        <main class="app-content">
+            <div class="row my-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                          Instruction
+                        </div>
+                        <div class="card-body">
+                          <h5 class="card-title">Game - Macau Location You Know?</h5>
+                          <ul>
+                              <li>
+                                  <p class="card-text">Press Start Button</p>
+                              </li>
+                              <li>
+                                  <p class="card-text">The map will show a random place in Macau</p>
+                              </li>
+                              <li>
+                                  <p class="card-text">Select the correct one from three buttons</p>
+                              </li>
+                              <li>
+                                  <p class="card-text">correct selection for one point, gameover for wrong selection and show the final score!</p>
+                              </li>
+                          </ul>
+                          <a id="setPanoramaByLocation" class="btn btn-primary">Game Start</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="map">
+                    <div class="col-md-12">
+                        <div id="panorama"></div>
+                        Current location:<span id="currentLocation">nowhere </span><br>
+                        Current score:<span id="currentScore">0</span>
+                        <div class="card my-4">
+                            <div class="card-header text-center">
+                              Make your choice
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title d-flex justify-content-around">
+                                  <button id="button-1" class="btn btn-warning">Please click "Game Start"</button>
+                                  <button id="button-2" class="btn btn-warning">Please click "Game Start"</button>
+                                  <button id="button-3" class="btn btn-warning">Please click "Game Start"</button>
+                              </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <!-- <script type="text/javascript" src="./moveLocation/select.js" ></script> -->
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG" crossorigin="anonymous"></script>
+    </body>
+</html>
+<script type="text/javascript"> 
+
+    // baidu API show the first 2D map
+	var map = new BMap.Map('panorama');
+	map.centerAndZoom(new BMap.Point(113.560949, 22.201223), 19);
+	map.addTileLayer(new BMap.PanoramaCoverageLayer());
+
+    // baidu API show the panorama view
+	var panorama = new BMap.Panorama('panorama'); 
+	panorama.setPov({heading: -40, pitch: 6});
+    
+    //Enter a list of location with coordinator to be guessed
+    let locationList =[
+        {name:"永援中學",x: 113.560949, y: 22.201223},
+        {name:"八佰伴",x: 113.55195, y: 22.194182},
+        {name:"巴思高游泳池",x: 113.564338, y: 22.205551},
+        {name:"螺絲山公園",x: 113.564183, y: 22.207227},
+        {name:"巴坡沙體育中心",x: 113.558106, y:22.215366 },
+        {name:"紀念孫中山公園",x: 113.556584, y:22.219072 },
+        {name:"紅街巿",x: 113.556386, y:22.208507 },
+        {name:"三盞燈",x: 113.557486, y: 22.206001},
+        {name:"盧廉若公園",x: 113.559723, y: 22.203375},
+        {name:"消防博物館",x: 113.555074, y: 22.20332},
+        {name:"白鴿巢公園",x: 113.551041, y: 22.20281},
+        {name:"新馬路",x: 113.551311, y: 22.19664},
+        {name:"觀光塔",x: 113.549671, y: 22.183765},,
+        {name:"宋玉生公園",x: 113.56236, y: 22.191729},
+        {name:"理工學院",x: 113.563878, y: 22.196628},
+        {name:"黑沙公園",x: 113.580663, y: 22.120602},
+        {name:"熊貓館",x: 113.569775, y: 22.129877},
+        {name:"二龍喉公園",x: 113.56302, y: 22.203136},
+        {name:"大三巴",x: 113.552492, y: 22.200673},
+        {name:"主教山",x: 113.546554, y: 22.19009 },
+        {name:"媽閣廟",x: 113.542817, y: 22.189445},
+        {name:"自來水廠",x: 113.551616, y: 22.214379},
+
+    ]
+
+    //set three button's name randomly, need to modify the random algorithm
+    function setButtonName (chosenLocation){
+        randomLocationIndex1 = Math.floor(Math.random() * locationList.length);
+        randomLocationIndex2 = Math.floor(Math.random() * locationList.length);
+        randomLocationIndex3 = Math.floor(Math.random() * locationList.length);
+
+        document.getElementById("button-1").innerHTML = locationList[randomLocationIndex1]["name"]
+        document.getElementById("button-2").innerHTML = chosenLocation
+        document.getElementById("button-3").innerHTML = locationList[randomLocationIndex3]["name"]
+
+    };
+
+    //Game Start button event, choose a random location from above list, set the panorama, set buttons' name
+    document.getElementById("setPanoramaByLocation").onclick = setPanoramaByLocation
+    function setPanoramaByLocation(){
+        randomLocationIndex = Math.floor(Math.random() * locationList.length);
+    
+		panorama.setPosition(new BMap.Point(locationList[randomLocationIndex]["x"], locationList[randomLocationIndex]["y"])); //根据经纬度坐标展示全景图		
+
+        chosenLocation = locationList[randomLocationIndex]["name"]
+        document.getElementById("currentLocation").innerHTML = chosenLocation;
+        setButtonName(chosenLocation);
+    }
+
+	// document.getElementById("setPanoramaByLocation").onclick = function(){ 
+
+    //     randomLocationIndex = Math.floor(Math.random() * locationList.length);
+    
+	// 	panorama.setPosition(new BMap.Point(locationList[randomLocationIndex]["x"], locationList[randomLocationIndex]["y"])); //根据经纬度坐标展示全景图		
+
+    //     chosenLocation = locationList[randomLocationIndex]["name"]
+    //     document.getElementById("currentLocation").innerHTML = chosenLocation;
+    //     setButtonName();
+	// };
+
+    var chosenLocation;
+    var currentScore = 0;
+    // determine correct choice
+
+    function onChoosing(input){
+        if(chosenLocation == input){
+            currentScore ++;
+            // document.getElementById("currentScore").innerHTML = currentScore;
+            console.log("you are right, current Score is " + currentScore);
+            setPanoramaByLocation();
+        } else {
+            console.log("your are wrong!");
+            if (window.confirm("GameOver, your score is" + currentScore))
+                {
+                    location.reload();
+                }
+                else
+                {
+                    location.reload();
+                }
+        }
+    }
+
+    //button click event
+
+	document.getElementById("button-1").onclick = onClickButton1;
+    function onClickButton1 (){
+
+        let button1Value = document.getElementById("button-1").innerHTML
+        onChoosing(button1Value);
+
+    }
+
+	document.getElementById("button-2").onclick = onClickButton2;
+    function onClickButton2 (){
+
+        let button2Value = document.getElementById("button-2").innerHTML
+        onChoosing(button2Value);
+        
+    }
+
+	document.getElementById("button-3").onclick = onClickButton3;
+    function onClickButton3 (){
+        
+        let button3Value = document.getElementById("button-3").innerHTML
+        onChoosing(button3Value);
+    }
+
+
+
+</script>

@@ -1,0 +1,39 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+button {
+  margin: 10px auto;
+}
+
+#title {
+  width: 30%;
+  margin: 20px auto;
+  text-align: center;
+  font-size: larger;
+  color: brown;
+}
+
+.selectionBoxContainer {
+  width: 20%;
+  margin: 20px auto;
+}
+.selectionBox {
+  font-size: larger;
+  color: brown;
+}
+
+#container {
+  height: 80%;
+}
+
+#message {
+  color: brown;
+  margin: 10px auto;
+}
